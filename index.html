@@ -16,11 +16,11 @@ html, body {
   padding: 0;
   width: 100%;
   height: 100%;
-  background: #FFFFFF; /* pure white for max brightness */
+  background: #FFFFFF; /* max brightness */
   font-family: Arial Black, Impact, sans-serif;
 }
 
-/* Center content full screen */
+/* Center everything */
 body {
   display: flex;
   flex-direction: column;
@@ -29,26 +29,25 @@ body {
   text-align: center;
 }
 
-/* Heading */
+/* Title */
 #title {
-  color: #0B2A6F; /* deep blue - sharp on projector */
+  color: #000000; /* black for clarity */
   font-size: 6vw;
   font-weight: 900;
   letter-spacing: 0.06em;
   margin-bottom: 5vh;
 }
 
-/* Timer */
+/* Countdown timer - RED */
 #timer {
-  color: #000000; /* maximum contrast */
+  color: #C00000; /* projector-safe deep red */
   font-size: 22vw;
   font-weight: 900;
   line-height: 1;
 }
 
-/* Last 10 seconds alert */
+/* Last 10 seconds blink */
 .final {
-  color: #C00000; /* deep red */
   animation: blink 1s steps(1) infinite;
 }
 
