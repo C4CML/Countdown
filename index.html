@@ -16,7 +16,7 @@ html, body {
   padding: 0;
   width: 100%;
   height: 100%;
-  background: #FFFFFF; /* max brightness */
+  background: #FFFFFF; /* pure white for projector */
   font-family: Arial Black, Impact, sans-serif;
 }
 
@@ -29,18 +29,17 @@ body {
   text-align: center;
 }
 
-/* Title */
+/* Heading */
 #title {
-  color: #000000; /* black for clarity */
+  color: #000000; /* black title for max contrast */
   font-size: 6vw;
   font-weight: 900;
   letter-spacing: 0.06em;
   margin-bottom: 5vh;
 }
 
-/* Countdown timer - RED */
+/* Countdown timer (inline style will ensure red) */
 #timer {
-  color: #C00000; /* projector-safe deep red */
   font-size: 22vw;
   font-weight: 900;
   line-height: 1;
@@ -64,7 +63,8 @@ body {
   IS ABOUT TO BEGIN IN
 </div>
 
-<div id="timer">00:00:00</div>
+<!-- Inline style to FORCE red colour -->
+<div id="timer" style="color:#C00000;">00:00:00</div>
 
 <script>
 /* Match start: 2 Jan 2026, 7:00 AM IST */
