@@ -8,7 +8,7 @@
 
 <!-- iPad Fullscreen -->
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 
 <style>
 html, body {
@@ -16,7 +16,7 @@ html, body {
   padding: 0;
   width: 100%;
   height: 100%;
-  background: #000;
+  background: #FFFFFF; /* MAX brightness for projector */
   font-family: Arial Black, Impact, sans-serif;
 }
 
@@ -31,25 +31,25 @@ body {
 
 /* Heading text */
 #title {
-  color: #FFFFFF;
+  color: #C00000; /* projector-safe deep red */
   font-size: 6vw;
   font-weight: 900;
-  letter-spacing: 0.05em;
-  margin-bottom: 4vh;
+  letter-spacing: 0.06em;
+  margin-bottom: 5vh;
 }
 
 /* Timer */
 #timer {
-  color: #FFD700; /* pure yellow */
+  color: #000000; /* maximum contrast */
   font-size: 22vw;
   font-weight: 900;
   line-height: 1;
 }
 
-/* Last 10 seconds blink (no blur) */
+/* Last 10 seconds blink */
 .final {
+  color: #C00000;
   animation: blink 1s steps(1) infinite;
-  color: #FF0000;
 }
 
 @keyframes blink {
