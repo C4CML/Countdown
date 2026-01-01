@@ -16,11 +16,11 @@ html, body {
   padding: 0;
   width: 100%;
   height: 100%;
-  background: #FFFFFF; /* brightest background */
+  background: #FFFFFF; /* pure white for max brightness */
   font-family: Arial Black, Impact, sans-serif;
 }
 
-/* Center everything */
+/* Center content full screen */
 body {
   display: flex;
   flex-direction: column;
@@ -29,24 +29,24 @@ body {
   text-align: center;
 }
 
-/* Title text */
+/* Heading */
 #title {
-  color: #0B2A6F; /* projector-safe deep blue */
+  color: #0B2A6F; /* deep blue - sharp on projector */
   font-size: 6vw;
   font-weight: 900;
   letter-spacing: 0.06em;
   margin-bottom: 5vh;
 }
 
-/* Countdown timer */
+/* Timer */
 #timer {
-  color: #000000; /* max contrast */
+  color: #000000; /* maximum contrast */
   font-size: 22vw;
   font-weight: 900;
   line-height: 1;
 }
 
-/* Last 10 seconds */
+/* Last 10 seconds alert */
 .final {
   color: #C00000; /* deep red */
   animation: blink 1s steps(1) infinite;
@@ -68,7 +68,7 @@ body {
 <div id="timer">00:00:00</div>
 
 <script>
-/* Match start: 2 Jan 7:00 AM IST */
+/* Match start: 2 Jan 2026, 7:00 AM IST */
 const targetTime = new Date("2026-01-02T07:00:00+05:30").getTime();
 const timerEl = document.getElementById("timer");
 
