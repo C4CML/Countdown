@@ -16,11 +16,10 @@ html, body {
   padding: 0;
   width: 100%;
   height: 100%;
-  background: #FFFFFF; /* pure white for projector */
+  background: #FFFFFF;
   font-family: Arial Black, Impact, sans-serif;
 }
 
-/* Center everything */
 body {
   display: flex;
   flex-direction: column;
@@ -29,55 +28,222 @@ body {
   text-align: center;
 }
 
-/* Heading */
 #title {
-  color: #000000; /* black title for max contrast */
+  color: #000000;
   font-size: 6vw;
   font-weight: 900;
   letter-spacing: 0.06em;
   margin-bottom: 5vh;
 }
 
-/* Countdown timer (inline style will ensure red) */
 #timer {
   font-size: 22vw;
   font-weight: 900;
   line-height: 1;
+  color: #C00000;
 }
 
-/* Last 10 seconds blink */
 .final {
-  animation: blink 1s steps(1) infinite;
+  animation: blink 0.8s steps(1) infinite;
 }
 
 @keyframes blink {
   50% { visibility: hidden; }
+}
+
+.letsplay {
+  font-size: 24vw !important;
+  color: #C00000 !important;
+  animation: seesaw 1.2s infinite alternate;
+  line-height: 1;
+}
+
+@keyframes seesaw {
+  0% { transform: rotate(-8deg); }
+  100% { transform: rotate(8deg); }
+}
+
+#timeInputOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.9);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+  color: white;
+}
+
+#timeInputs {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 30px;
+}
+
+select {
+  width: 90px;
+  height: 80px;
+  font-size: 28px;
+  font-weight: bold;
+  text-align: center;
+  border: 3px solid #C00000;
+  border-radius: 10px;
+  background: white;
+  color: #C00000;
+  font-family: Arial Black, sans-serif;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  cursor: pointer;
+}
+
+#startBtn {
+  font-size: 26px;
+  padding: 18px 45px;
+  background: #C00000;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  font-family: Arial Black, sans-serif;
+}
+
+#startBtn:hover {
+  background: #A00000;
+}
+
+#resetBtn {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  font-size: 20px;
+  padding: 12px 24px;
+  background: #C00000;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: bold;
+  display: none;
+  font-family: Arial Black, sans-serif;
+}
+
+.timeColon {
+  font-size: 32px;
+  font-weight: bold;
+  align-self: center;
+  color: white;
+  margin: 0 5px;
 }
 </style>
 </head>
 
 <body>
 
-<div id="title">
-  SSR BIGGEST TENNIS FESTIVAL<br>
-  IS ABOUT TO BEGIN IN
+<button id="resetBtn">🔄 RESET</button>
+
+<div id="timeInputOverlay">
+  <div style="font-size: 34px; margin-bottom: 25px;">Set Target Time</div>
+  <div id="timeInputs">
+    <select id="hours">
+      <option value="1"> 1</option><option value="2"> 2</option><option value="3"> 3</option>
+      <option value="4"> 4</option><option value="5"> 5</option><option value="6"> 6</option>
+      <option value="7" selected> 7</option><option value="8"> 8</option><option value="9"> 9</option>
+      <option value="10">10</option><option value="11">11</option><option value="12">12</option>
+    </select>
+    <span class="timeColon">:</span>
+    <select id="minutes">
+      <option value="0" selected>00</option><option value="1">01</option><option value="2">02</option>
+      <option value="3">03</option><option value="4">04</option><option value="5">05</option>
+      <!-- ... all 60 minutes ... -->
+      <option value="55">55</option><option value="56">56</option><option value="57">57</option>
+      <option value="58">58</option><option value="59">59</option>
+    </select>
+    <span class="timeColon">:</span>
+    <select id="ampm">
+      <option value="AM">AM</option>
+      <option value="PM" selected>PM</option>
+    </select>
+  </div>
+  <button id="startBtn">START COUNTDOWN</button>
 </div>
 
-<!-- Inline style to FORCE red colour -->
-<div id="timer" style="color:#C00000;">00:00:00</div>
+<div id="title">Next Session Starts In<br></div>
+<div id="timer">--:--:--</div>
 
 <script>
-/* Match start: 2 Jan 2026, 7:00 AM IST */
-const targetTime = new Date("2026-01-02T07:00:00+05:30").getTime();
 const timerEl = document.getElementById("timer");
+const overlay = document.getElementById("timeInputOverlay");
+const titleEl = document.getElementById("title");
+const resetBtn = document.getElementById("resetBtn");
+let targetTime = null;
+let timerInterval = null;
+
+// Generate all 60 minutes options
+const minutesSelect = document.getElementById("minutes");
+for(let i = 0; i < 60; i++) {
+  const option = document.createElement("option");
+  option.value = i;
+  option.textContent = i.toString().padStart(2, '0');
+  minutesSelect.appendChild(option);
+}
+
+function getTargetTime() {
+  const hours12 = parseInt(document.getElementById("hours").value);
+  const minutes = parseInt(document.getElementById("minutes").value);
+  const ampm = document.getElementById("ampm").value;
+  
+  let hours24 = hours12;
+  if (ampm === 'PM' && hours12 !== 12) hours24 += 12;
+  if (ampm === 'AM' && hours12 === 12) hours24 = 0;
+  
+  // Today at target time
+  const now = new Date();
+  const target = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hours24, minutes, 0);
+  
+  // If target time is in past, set for tomorrow
+  if (target < now) {
+    target.setDate(target.getDate() + 1);
+  }
+  
+  return target.getTime();
+}
+
+function startCountdown() {
+  targetTime = getTargetTime();
+  overlay.style.display = "none";
+  resetBtn.style.display = "block";
+  updateTimer();
+  timerInterval = setInterval(updateTimer, 1000);
+}
+
+function resetCountdown() {
+  clearInterval(timerInterval);
+  targetTime = null;
+  timerEl.textContent = "--:--:--";
+  timerEl.className = "";
+  timerEl.style.color = "#C00000";
+  titleEl.style.display = "block";
+  overlay.style.display = "flex";
+  resetBtn.style.display = "none";
+}
 
 function updateTimer() {
+  if (!targetTime) return;
+  
   const now = new Date().getTime();
   let diff = Math.floor((targetTime - now) / 1000);
 
   if (diff <= 0) {
-    timerEl.textContent = "00:00:00";
-    timerEl.classList.add("final");
+    timerEl.textContent = "LET'S PLAY";
+    timerEl.className = "letsplay";
+    titleEl.style.display = "none";
+    clearInterval(timerInterval);
     return;
   }
 
@@ -86,14 +252,21 @@ function updateTimer() {
   const secs = String(diff % 60).padStart(2, "0");
 
   timerEl.textContent = `${hrs}:${mins}:${secs}`;
+  timerEl.className = diff <= 30 ? "final" : "";
 
-  if (diff <= 10) {
-    timerEl.classList.add("final");
-  }
+  // Update timer color back to red
+  timerEl.style.color = "#C00000";
 }
 
-updateTimer();
-setInterval(updateTimer, 1000);
+// Event listeners
+document.getElementById("startBtn").onclick = startCountdown;
+resetBtn.onclick = resetCountdown;
+
+document.addEventListener("keydown", (e) => {
+  if (overlay.style.display !== "none" && e.key === "Enter") {
+    startCountdown();
+  }
+});
 </script>
 
 </body>
